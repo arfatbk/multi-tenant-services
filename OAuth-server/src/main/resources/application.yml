@@ -1,0 +1,94 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /auth-server
+
+logging:
+  #  structured:
+  #    format:
+  #      console: ecs
+  level:
+    org.springframework.security: trace
+
+
+spring:
+  application:
+    name: OAuth-server
+
+  security:
+    user:
+      name: user
+      password: password
+    oauth2:
+      authorizationserver:
+        client:
+          oidc-client:
+            registration:
+              client-id: "oidc-client"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+              redirect-uris:
+                - "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
+              post-logout-redirect-uris:
+                - "http://127.0.0.1:8080/"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: true
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+
+spring.datasource.url: jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username: user
+spring.datasource.password: pw
+spring.datasource.schema: public
+spring.datasource.driver-class-name: org.postgresql.Driver
+
+
+multitenancy:
+  tenants:
+    spring1:
+      domain: spring1.com
+      datasource:
+        url: jdbc:postgresql://localhost:5432/postgres
+        schema: spring1
+        username: user
+        password: pw
+        driver-class-name: org.postgresql.Driver
+    localhost:
+      domain: localhost
+      datasource:
+        url: jdbc:postgresql://localhost:5432/postgres
+        schema: public
+        username: user
+        password: pw
+        driver-class-name: org.postgresql.Driver
+
+    silver:
+      domain: silver.com
+      datasource:
+        url: jdbc:postgresql://localhost:5432/postgres
+        schema: silver
+        username: user
+        password: pw
+        driver-class-name: org.postgresql.Driver
+
+
+logging.level.org.hibernate.SQL: DEBUG
+logging.level.com.arfat: DEBUG
+spring.jpa.properties.hibernate.format_sql: true
+logging.level.org.hibernate.type.descriptor.sql: trace
+
+#spring.jpa.hibernate.ddl-auto: create-drop

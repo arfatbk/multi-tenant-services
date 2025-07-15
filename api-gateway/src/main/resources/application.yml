@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: api-gateway
+
+
+#Move this to environment variables
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000/auth-server
+          jwk-set-uri: http://localhost:9000/auth-server/oauth2/jwks
+
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+  endpoint:
+    gateway:
+      access: unrestricted
+
+
+logging:
+  structured:
+    format:
+      console: ecs
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.web.reactive: TRACE
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+
+multitenancy:
+  tenants:
+    spring1:
+      domain: spring1.com
+    localhost:
+      domain: localhost
+
+application:
+  urls:
+    auth-server: http://localhost:9000/auth-server
+    user-service: http://localhost:8081/user-service
